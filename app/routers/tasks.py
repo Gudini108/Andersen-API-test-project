@@ -1,47 +1,43 @@
-from fastapi import APIRouter, HTTPException, Depends, Body, Query
-from fastapi_pagination import Params, paginate
+from typing import Optional
+from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi_pagination import Params, Page
+from fastapi_pagination.ext.ormar import paginate
 from ormar.exceptions import NoMatch
-from pydantic import ValidationError
 
 from app.security import get_current_user
 from app.db import TodoUser, TodoTask
+from app.schemas import TaskInput, TaskStatus, TaskOut, TaskUpdate
+
 
 router = APIRouter()
 
 
 @router.post("/tasks", tags=["Tasks"])
-async def create_task(task_data: dict = Body(...),
+async def create_task(task_data: TaskInput,
                       current_user: TodoUser = Depends(get_current_user)):
     """Create new task"""
-    title = task_data.get("title")
-    new_task = await TodoTask.objects.create(title=title, user=current_user)
+
+    new_task = await TodoTask.objects.create(**task_data.dict(),
+                                             user=current_user)
     return {"message": f"Task {new_task.title} created!"}
 
 
-@router.get("/tasks", tags=["Tasks"])
+@router.get("/tasks",  response_model=Page[TaskOut], tags=["Tasks"])
 async def get_all_user_tasks(
+    status: Optional[TaskStatus] = None,
     current_user: TodoUser = Depends(get_current_user),
     page: int = Query(1, description="Page number", ge=1),
     page_size: int = Query(5, description="Tasks per page", ge=1, le=100)
 ):
     """Get list of all user's tasks"""
-    tasks = await TodoTask.objects.filter(user=current_user).all()
+    tasks = TodoTask.objects.filter(user=current_user)
 
-    if not tasks:
-        return {"message": "You currently have no Tasks."}
+    if status is not None:
+        tasks = tasks.filter(status=status)
 
     params = Params(page=page, size=page_size)
 
-    filtered_tasks = [
-        {
-            "Task": task.title,
-            "Description": task.description,
-            "Status": task.status
-        }
-        for task in tasks
-    ]
-
-    return paginate(filtered_tasks, params=params)
+    return await paginate(tasks, params=params)
 
 
 @router.get("/tasks/{task_id}", tags=["Tasks"])
@@ -58,10 +54,11 @@ async def get_task(task_id: int,
             )
 
         filtered_task = {
-                "Task": task.title,
-                "Description": task.description,
-                "Status": task.status
-                }
+            "id": task.id,
+            "Task": task.title,
+            "Description": task.description,
+            "Status": task.status
+        }
 
         return filtered_task
 
@@ -72,52 +69,9 @@ async def get_task(task_id: int,
         )
 
 
-@router.get("/tasks/status/{status}", tags=["Tasks"])
-async def get_tasks_by_status(
-    status: str,
-    current_user: TodoUser = Depends(get_current_user),
-    page: int = Query(1, description="Page number", ge=1),
-    page_size: int = Query(5, description="Tasks per page", ge=1, le=100)
-):
-    """Filter tasks by status"""
-    status_dict = {
-        "new": "New",
-        "in progress": "In Progress",
-        "completed": "Completed"
-    }
-    lowercase_status = status.lower()
-    if lowercase_status not in status_dict:
-        raise HTTPException(
-            status_code=400,
-            detail=(
-                "Invalid status. Choose 'New', 'In Progress', or 'Completed'")
-        )
-
-    tasks = await (
-        TodoTask.objects.filter(user=current_user,
-                                status=status_dict[lowercase_status]).all())
-
-    if not tasks:
-        return {
-            "message": "You do not have any "
-            f"'{status_dict[lowercase_status]}' tasks."}
-
-    params = Params(page=page, size=page_size)
-
-    filtered_tasks = [
-        {
-            "Task": task.title,
-            "Description": task.description,
-            "Status": task.status
-        }
-        for task in tasks
-    ]
-
-    return paginate(filtered_tasks, params=params)
-
-
 @router.put("/tasks/{task_id}", tags=["Tasks"])
-async def update_task(task_id: int, updated_task: dict = Body(...),
+async def update_task(task_id: int,
+                      updated_task: TaskUpdate,
                       current_user: TodoUser = Depends(get_current_user)):
     """Update existing task"""
     try:
@@ -127,7 +81,7 @@ async def update_task(task_id: int, updated_task: dict = Body(...),
                 status_code=403,
                 detail="You don't have permission to update this task")
 
-        await task_to_update.update(**updated_task)
+        await task_to_update.update(**updated_task.dict(exclude_unset=True))
         return {"message": f"Task {task_to_update.title} updated successfully"}
 
     except NoMatch:
@@ -135,12 +89,6 @@ async def update_task(task_id: int, updated_task: dict = Body(...),
             status_code=404,
             detail="Couldn't find this task"
         )
-
-    except ValidationError:
-        return {
-            "message": "Please choose 'New', 'In Progress' or 'Completed' "
-            "for a status"
-            }
 
 
 @router.delete("/tasks/{task_id}", tags=["Tasks"])
