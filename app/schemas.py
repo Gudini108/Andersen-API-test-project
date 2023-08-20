@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Optional
+from fastapi import HTTPException
 from pydantic import BaseModel, Field, validator
 
 
@@ -32,5 +33,15 @@ class TaskRequestFilter(BaseModel):
 class TaskOut(BaseModel):
     id: int
     title: str
-    description:  Optional[str]
+    description: Optional[str]
     status: TaskStatus
+
+    @validator("id")
+    def validate_task_owner(cls, value, values, **kwargs):
+        current_user = values.get("current_user")
+        if current_user and current_user.id != value.user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="You don't have permission to access this task"
+            )
+        return value

@@ -40,27 +40,20 @@ async def get_all_user_tasks(
     return await paginate(tasks, params=params)
 
 
-@router.get("/tasks/{task_id}", tags=["Tasks"])
+@router.get("/tasks/{task_id}", response_model=TaskOut, tags=["Tasks"])
 async def get_task(task_id: int,
                    current_user: TodoUser = Depends(get_current_user)):
     """Get info about specific task by its ID"""
     try:
-        task = await TodoTask.objects.select_related("user").get(id=task_id)
-
-        if task.user != current_user:
+        task = await TodoTask.objects.get_or_none(user=current_user,
+                                                  id=task_id)
+        if task is None:
             raise HTTPException(
-                status_code=403,
-                detail="You don't have permission to access this task"
+                status_code=404,
+                detail="Task not found"
             )
 
-        filtered_task = {
-            "id": task.id,
-            "Task": task.title,
-            "Description": task.description,
-            "Status": task.status
-        }
-
-        return filtered_task
+        return task
 
     except NoMatch:
         raise HTTPException(
