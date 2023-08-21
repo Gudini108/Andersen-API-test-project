@@ -1,4 +1,4 @@
-"""Response endpoints schemas"""
+"""Response models for endpoints"""
 
 from enum import Enum
 from typing import Optional
@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, validator
 
 class UsersOut(BaseModel):
     """Response model to list all usernames"""
+    id: int
     username: str
 
 
@@ -41,3 +42,7 @@ class TaskOut(BaseModel):
     title: str
     description: Optional[str]
     status: TaskStatus
+    user: UsersOut
+
+    class Config:
+        orm_mode = True

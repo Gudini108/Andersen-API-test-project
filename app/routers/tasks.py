@@ -20,18 +20,21 @@ async def create_task(task_data: TaskInput,
 
     new_task = await TodoTask.objects.create(**task_data.dict(),
                                              user=current_user)
-    return {"message": f"Task {new_task.title} created!"}
+    return {"message": f"Task '{new_task.title}' created!"}
 
 
 @router.get("/tasks",  response_model=Page[TaskOut], tags=["Tasks"])
 async def get_all_user_tasks(
+    user_id: Optional[int] = None,
     status: Optional[TaskStatus] = None,
-    current_user: TodoUser = Depends(get_current_user),
     page: int = Query(1, description="Page number", ge=1),
-    page_size: int = Query(5, description="Tasks per page", ge=1, le=100)
+    page_size: int = Query(10, description="Tasks per page", ge=1, le=100)
 ):
     """Get list of all user's tasks with pagination"""
-    tasks = TodoTask.objects.filter(user=current_user)
+    tasks = TodoTask.objects.select_related("user")
+
+    if user_id is not None:
+        tasks = tasks.filter(user=user_id)
 
     if status is not None:
         tasks = tasks.filter(status=status)
@@ -42,10 +45,11 @@ async def get_all_user_tasks(
 
 
 @router.get("/tasks/{task_id}", response_model=TaskOut, tags=["Tasks"])
-async def get_task(task_id: int,
-                   current_user: TodoUser = Depends(get_current_user)):
+async def get_task(task_id: int):
     """Get info about specific task by its ID"""
-    task = await TodoTask.objects.get_or_none(user=current_user, id=task_id)
+    task = await (
+        TodoTask.objects.select_related("user").get_or_none(id=task_id))
+
     if task is None:
         raise HTTPException(
             status_code=404,
@@ -60,11 +64,18 @@ async def update_task(task_id: int,
                       updated_task: TaskUpdate,
                       current_user: TodoUser = Depends(get_current_user)):
     """Update existing task"""
-    task = await TodoTask.objects.get_or_none(user=current_user, id=task_id)
+    task = await TodoTask.objects.get_or_none(id=task_id)
+
     if task is None:
         raise HTTPException(
             status_code=404,
             detail="Task not found"
+        )
+
+    if task.user != current_user:
+        raise HTTPException(
+            status_code=401,
+            detail="Can't update other user's tasks"
         )
 
     await task.update(**updated_task.dict(exclude_unset=True))
@@ -75,11 +86,18 @@ async def update_task(task_id: int,
 async def delete_task(task_id: int,
                       current_user: TodoUser = Depends(get_current_user)):
     """Delete existing task"""
-    task = await TodoTask.objects.get_or_none(user=current_user, id=task_id)
+    task = await TodoTask.objects.get_or_none(id=task_id)
+
     if task is None:
         raise HTTPException(
             status_code=404,
             detail="Task not found"
+        )
+
+    if task.user != current_user:
+        raise HTTPException(
+            status_code=401,
+            detail="Can't delete other user's tasks"
         )
 
     await task.delete()
