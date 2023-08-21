@@ -1,16 +1,24 @@
+"""Response endpoints schemas"""
+
 from enum import Enum
 from typing import Optional
-from fastapi import HTTPException
 from pydantic import BaseModel, Field, validator
 
 
+class UsersOut(BaseModel):
+    """Response model to list all usernames"""
+    username: str
+
+
 class TaskStatus(str, Enum):
+    """Model for choosing task status"""
     New = "New"
     InProgress = "In Progress"
     Completed = "Completed"
 
 
 class TaskInput(BaseModel):
+    """Response model for task input with status validation"""
     title: str = Field(..., min_length=1, max_length=256)
     description:  Optional[str] = None
     status: Optional[TaskStatus] = TaskStatus.New
@@ -23,25 +31,13 @@ class TaskInput(BaseModel):
 
 
 class TaskUpdate(TaskInput):
+    """Response model to update task"""
     title: Optional[str] = Field(None, min_length=1, max_length=256)
 
 
-class TaskRequestFilter(BaseModel):
-    status: Optional[TaskStatus] = None
-
-
 class TaskOut(BaseModel):
+    """Response model for filtering task response"""
     id: int
     title: str
     description: Optional[str]
     status: TaskStatus
-
-    @validator("id")
-    def validate_task_owner(cls, value, values, **kwargs):
-        current_user = values.get("current_user")
-        if current_user and current_user.id != value.user.id:
-            raise HTTPException(
-                status_code=403,
-                detail="You don't have permission to access this task"
-            )
-        return value

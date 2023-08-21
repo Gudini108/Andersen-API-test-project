@@ -1,3 +1,5 @@
+"""App startup, shutdown and root endpoints handelings"""
+
 from fastapi import FastAPI, APIRouter
 from fastapi_pagination import add_pagination
 

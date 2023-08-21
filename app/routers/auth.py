@@ -1,3 +1,5 @@
+"""Authentification endpoints"""
+
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, HTTPException, status, Depends
 from ormar.exceptions import NoMatch

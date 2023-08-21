@@ -1,3 +1,5 @@
+"""Verifications and security"""
+
 import jwt
 import datetime
 from datetime import datetime as dtime
@@ -24,6 +26,7 @@ def get_password_hash(password):
 
 
 async def authenticate_user(username: str, password: str):
+    """Authenticate user with password verification"""
     user = await TodoUser.objects.get(username=username)
     if user and verify_password(password, user.password):
         return user
