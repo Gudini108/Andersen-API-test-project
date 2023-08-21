@@ -74,7 +74,7 @@ async def update_task(task_id: int,
 
     if task.user != current_user:
         raise HTTPException(
-            status_code=401,
+            status_code=403,
             detail="Can't update other user's tasks"
         )
 
@@ -96,7 +96,7 @@ async def delete_task(task_id: int,
 
     if task.user != current_user:
         raise HTTPException(
-            status_code=401,
+            status_code=403,
             detail="Can't delete other user's tasks"
         )
 
