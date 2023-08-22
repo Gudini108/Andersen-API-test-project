@@ -4,6 +4,7 @@ fastapi-pagination==0.12.8
 ormar==0.12.1
 passlib==1.7.4
 psycopg2-binary==2.9.5
+pytest==7.4.0
 python-multipart==0.0.6
 PyJWT==2.7.0
 uvicorn==0.20.0

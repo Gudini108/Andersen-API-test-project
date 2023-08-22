@@ -40,7 +40,3 @@ class TodoTask(ormar.Model):
                                choices=["New", "In Progress", "Completed"])
     user: TodoUser = ormar.ForeignKey(TodoUser, related_name="tasks",
                                       ondelete="CASCADE", nullable=False)
-
-
-engine = sqlalchemy.create_engine(settings.db_url)
-metadata.create_all(engine)

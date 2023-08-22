@@ -6,7 +6,7 @@ from datetime import datetime as dtime
 from fastapi import HTTPException, Depends
 from ormar.exceptions import NoMatch
 
-from app.db import TodoUser
+from app.repo.user import UserRepo
 from app.settings import (
     PWD_CONTEXT,
     SECRET_KEY,
@@ -27,7 +27,7 @@ def get_password_hash(password):
 
 async def authenticate_user(username: str, password: str):
     """Authenticate user with password verification"""
-    user = await TodoUser.objects.get(username=username)
+    user = await UserRepo.safe_get_user_by_username(username=username)
     if user and verify_password(password, user.password):
         return user
     return None
@@ -69,7 +69,7 @@ async def get_current_user(token_payload: dict = Depends(verify_token)):
                             detail='Invalid authentication credentials')
 
     try:
-        user = await TodoUser.objects.filter(username=username).first()
+        user = await UserRepo.safe_get_user_by_username(username=username)
         return user
 
     except NoMatch:

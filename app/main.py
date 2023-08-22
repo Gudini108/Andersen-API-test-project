@@ -2,8 +2,10 @@
 
 from fastapi import FastAPI, APIRouter
 from fastapi_pagination import add_pagination
+import sqlalchemy
+from app.config import settings
 
-from app.db import database
+from app.db import database, metadata
 from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
 from app.routers.tasks import router as tasks_router
@@ -50,6 +52,9 @@ app.include_router(tasks_router, prefix=api_prefx)
 @app.on_event("startup")
 async def startup():
     """Connects to DB"""
+    engine = sqlalchemy.create_engine(settings.db_url)
+    metadata.create_all(engine)
+
     if not database.is_connected:
         await database.connect()
 

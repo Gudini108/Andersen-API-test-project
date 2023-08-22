@@ -46,3 +46,10 @@ class TaskOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class TodoUserInput(BaseModel):
+    username: str
+    first_name: str
+    password: str
+    last_name: Optional[str]

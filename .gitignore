@@ -2,4 +2,7 @@
 /venv
 
 # Cache
-/app/__pycache__
+*/__pycache__
+/.pytest_cache
+/app/repo/__pycache__
+/app/routers/__pycache__
