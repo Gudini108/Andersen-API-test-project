@@ -1,5 +1,5 @@
 from app.db import TodoUser
-from app.schemas import TodoUserInput
+from app.schemas.schemas import TodoUserInput
 
 
 class UserRepo():

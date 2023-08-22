@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from datetime import timedelta
 
 from app.repo.user import UserRepo
-from app.schemas import TodoUserInput
+from app.schemas.schemas import TodoUserInput
 from app.settings import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.security import (
     get_password_hash,
