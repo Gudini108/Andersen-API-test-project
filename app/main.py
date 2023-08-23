@@ -38,7 +38,7 @@ def root():
         'signup': app.url_path_for('signup'),
         'login': app.url_path_for('login'),
         'users': app.url_path_for('get_all_users'),
-        'tasks': app.url_path_for('get_all_user_tasks')
+        'tasks': app.url_path_for('get_all_tasks')
     }
 
 

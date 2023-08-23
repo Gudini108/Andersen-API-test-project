@@ -12,8 +12,8 @@
 
 - [x] Write unit tests for the API endpoints.
 
-- [x] Use PostgreSQL as the database to store data. Create the corresponding database configuration in the chosen web framework.
+- [x] Use PostgreSQL as DB. Create the corresponding database configuration in the chosen web framework.
 
-- [x] Create a README.md file in the project repository with project documentation, including installation instructions, API documentation, and any other relevant information.
+- [x] Create a README.md file in the project repository with project documentation, installation instructions, API documentation, and any other relevant information.
 
 - [x] Create a Git repository for the project on GitHub and regularly commit and push changes.

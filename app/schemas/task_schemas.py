@@ -3,11 +3,11 @@
 from enum import Enum
 from typing import Optional
 from pydantic import BaseModel, Field, validator
-from app.schemas.user_schemas import UsersOut
+from app.schemas.user_schemas import UserOut
 
 
 class TaskStatus(str, Enum):
-    """Model for choosing task status"""
+    """Enum with status of the task"""
     New = "New"
     InProgress = "In Progress"
     Completed = "Completed"
@@ -37,7 +37,7 @@ class TaskOut(BaseModel):
     title: str
     description: Optional[str]
     status: TaskStatus
-    user: UsersOut
+    user: UserOut
 
     class Config:
         orm_mode = True

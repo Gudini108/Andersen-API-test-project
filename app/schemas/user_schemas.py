@@ -4,13 +4,14 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class UsersOut(BaseModel):
-    """Response model to list all usernames"""
+class UserOut(BaseModel):
+    """Response model for user"""
     id: int
     username: str
 
 
 class TodoUserInput(BaseModel):
+    """Response model for user input"""
     username: str
     first_name: str
     password: str
