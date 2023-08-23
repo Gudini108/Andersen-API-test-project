@@ -3,8 +3,8 @@
 from typing import List
 from fastapi import APIRouter
 
-from app.repo.user import UserRepo
-from app.schemas.schemas import UsersOut
+from app.repo.users import UserRepo
+from app.schemas.user_schemas import UsersOut
 
 
 router = APIRouter()

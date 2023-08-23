@@ -6,7 +6,7 @@ from datetime import datetime as dtime
 from fastapi import HTTPException, Depends
 from ormar.exceptions import NoMatch
 
-from app.repo.user import UserRepo
+from app.repo.users import UserRepo
 from app.settings import (
     PWD_CONTEXT,
     SECRET_KEY,

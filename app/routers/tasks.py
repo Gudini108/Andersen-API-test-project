@@ -5,9 +5,9 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi_pagination import Params, Page
 
 from app.db import TodoUser
-from app.repo.task import TaskRepo
+from app.repo.tasks import TaskRepo
 from app.security import get_current_user
-from app.schemas.schemas import TaskInput, TaskStatus, TaskOut, TaskUpdate
+from app.schemas.task_schemas import TaskInput, TaskStatus, TaskOut, TaskUpdate
 
 
 router = APIRouter()

@@ -1,14 +1,9 @@
-"""Response models for endpoints"""
+"""Response task models for endpoints"""
 
 from enum import Enum
 from typing import Optional
 from pydantic import BaseModel, Field, validator
-
-
-class UsersOut(BaseModel):
-    """Response model to list all usernames"""
-    id: int
-    username: str
+from app.schemas.user_schemas import UsersOut
 
 
 class TaskStatus(str, Enum):
@@ -46,10 +41,3 @@ class TaskOut(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-class TodoUserInput(BaseModel):
-    username: str
-    first_name: str
-    password: str
-    last_name: Optional[str]

@@ -4,8 +4,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, HTTPException, status, Depends
 from datetime import timedelta
 
-from app.repo.user import UserRepo
-from app.schemas.schemas import TodoUserInput
+from app.repo.users import UserRepo
+from app.schemas.user_schemas import TodoUserInput
 from app.settings import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.security import (
     get_password_hash,

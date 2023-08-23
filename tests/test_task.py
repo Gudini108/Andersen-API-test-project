@@ -4,7 +4,7 @@ from unittest.mock import patch
 from fastapi import HTTPException
 from pydantic import ValidationError
 
-from app.schemas.schemas import TaskInput
+from app.schemas.task_schemas import TaskInput
 from app.routers.tasks import (
     create_task,
     get_all_tasks,

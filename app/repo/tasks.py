@@ -2,7 +2,7 @@ from fastapi_pagination.ext.ormar import paginate
 from fastapi_pagination import Params
 
 from app.db import TodoTask
-from app.schemas.schemas import TaskUpdate
+from app.schemas.task_schemas import TaskUpdate
 
 
 class TaskRepo():
