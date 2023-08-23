@@ -13,4 +13,10 @@ you would need Python, preferably latest version and Docker Desktop.
 
 #### You would find Swagger documentation at `localhost:8080/docs/` or ReDoc documentation at `localhost:8080/redoc/`
 
-#### To drop containers and clean DB use `./scripts/drop.sh` command
+#### To drop containers and clean Database use `./scripts/drop.sh` command
+
+#### To launch unittests use `./scripts/test.sh` command
+
+
+### Known issues:
+Mac users with M1-M2 processors use `export DOCKER_DEFAULT_PLATFORM=linux/amd64` command
