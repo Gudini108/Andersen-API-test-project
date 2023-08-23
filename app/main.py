@@ -23,7 +23,7 @@ Simple RESTful API using FastAPI for a social networking application
 """
 
 app = FastAPI(
-    title='Webtronics FastAPI test project',
+    title='Andersen FastAPI test project',
     description=API_DESCRIPTION,
     version='1.0.0'
 )
