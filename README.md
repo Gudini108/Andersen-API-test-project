@@ -19,4 +19,4 @@ you would need Python, preferably latest version and Docker Desktop.
 
 
 ### Known issues:
-Mac users with M1-M2 processors use `export DOCKER_DEFAULT_PLATFORM=linux/amd64` command
+For M1 and M2 Macbooks use `export DOCKER_DEFAULT_PLATFORM=linux/amd64` command beforhand
