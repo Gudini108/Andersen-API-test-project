@@ -2,7 +2,7 @@
 
 ### How to lauch this project:
 
-you would need Python, preferably latest version and Docker Desktop.
+you would need Docker Desktop.
 
 #### Clone this repo and move to project main directory:
     git clone https://github.com/Gudini108/Andersen-API-test-project.git
@@ -19,4 +19,4 @@ you would need Python, preferably latest version and Docker Desktop.
 
 
 ### Known issues:
-For M1 and M2 Macbooks use `export DOCKER_DEFAULT_PLATFORM=linux/amd64` command beforhand
+For M1 and M2 Macbooks use `export DOCKER_DEFAULT_PLATFORM=linux/amd64` command beforehand
